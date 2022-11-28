@@ -1,3 +1,8 @@
+import os
+import time
+import colorama
+from colorama import Fore
+
 class GameState:
     def __init__(self, gridsize, players):
         self.gridsize = gridsize
@@ -8,29 +13,33 @@ class GameState:
         self.players = players
 
 def main():
-    g = GameState(3,2)
+    gs = input("gridsize (min 2): ")
+
+    g = GameState(int(gs),2)
     curplayer = 0
     while True:
+        
         if curplayer == 1:
+            time.sleep(2)
+
+            os.system('cls' if os.name == 'nt' else 'clear')
             move = aiMove(g)
             print("ai wants to make move " + str(move))
             m = str(move[0]) + "," + str(move[1])
             doMove(m,g,curplayer+1)
             curplayer = nextPlayer(curplayer, g)
-            for i in g.grid:
-                print(i)
+            print_board(g.gridsize, g.grid)
             continue
 
         doMove(input("player " + str(curplayer+1) + " move: "),g, curplayer+1)
-        for i in g.grid:
-            print(i)
+        print_board(g.gridsize, g.grid)
         curplayer = nextPlayer(curplayer, g)
 
 def nextPlayer(cur, g):
     return (cur+1)%g.players
 
 def checkEnclosed(x,y,g):
-    print(getBordered(x,y,g))
+    #print(getBordered(x,y,g))
     ps = getBordered(x,y,g)
     if ps[0] >= 0 and ps[0] < g.gridsize*2-1 and ps[1] >= 0 and ps[1] < g.gridsize*2-1:
         if (isEnclosed(ps[0],ps[1],g)):
@@ -63,6 +72,8 @@ def countBorders(x,y,g):
     return count
 
 def aiMove(g):
+    print("Ai waiting for dramatic effect")
+    time.sleep(1)
     moves = {}
     for x in range(1,g.gridsize*2-1,2):
         for y in range(1,g.gridsize*2-1,2):
@@ -93,6 +104,10 @@ def direction(y):
 def end_game(g):
     winner = g.scores.index(max(g.scores))
     print("player " + str(winner + 1) + " wins !!! : )")
+    print_board(g.gridsize,g.grid)
+    resp = input("play again : ) ?????????? (y/n): ")
+    if resp[0] == 'y':
+        main()
     exit()
 
 def doMove(m, g, player):
@@ -119,8 +134,8 @@ def doMove(m, g, player):
             end_game(g)
 
         print("player " + str(player) + " gets point, another turn")
-        for i in g.grid:
-            print(i)
+
+        print_board(g.gridsize, g.grid)
         if (player == 2):
             move = aiMove(g)
             print("ai wants to make move " + str(move))
@@ -130,6 +145,56 @@ def doMove(m, g, player):
         doMove(input("move: "),g, player)
         
 
+def print_board(gridsize,a):
+    i = 1
+    printH = 1 
+    h_or_v = 0#takes the rigth array
+    for line in range(0,gridsize*2-1):
+        if (printH == 1):
+            for part in range(0,gridsize-1):
+                h=a[h_or_v]#horizontal lines
+                print(Fore.WHITE+'*', end = " ")
+                if h[i] == 1:
+                    print(Fore.RED+'-----', end = " ")
+                elif h[i] == 2:
+                    print(Fore.BLUE +'-----', end = " ")
+                else:
+                    print('     ', end = " ")
+                i=i+2
+            print(Fore.WHITE+'*')
+            i = 0 #for vertical
+            printH = 0
+            h_or_v += 1
+            one_m= ''
+        elif(printH == 0):
+            for part in range(0,gridsize-1):
+                v=a[h_or_v]
+                if v[i] == 1:
+                    print(Fore.RED+'|', end = " ")
+                    one_m += Fore.RED+"|       "
+                elif v[i] == 2:
+                    print(Fore.BLUE+'|', end = " ")
+                    one_m += Fore.BLUE+"|       "
+                else:
+                    print(' ', end = " ") 
+                    one_m += "        "
+                print("     ", end = " ")
+                i=i+2
+                
+            if v[i] == 1:
+                print(Fore.RED+'|')
+                one_m += Fore.RED+'|'
+            elif v[i] == 2:
+                print(Fore.BLUE+'|')
+                one_m += Fore.BLUE+'|'
+            else:
+                print(' ') 
+            print(one_m)
+            
+            i= 1
+            h_or_v += 1
+            printH = 1     
+    print(Fore.RESET + " \n")
 
 if __name__ == "__main__":
     main()
