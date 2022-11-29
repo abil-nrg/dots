@@ -33,9 +33,8 @@ Implementation
  
  
 Team Members
-    Ali Gaineshev
-    Omar Madhni
-    Abil Nurgaliyev
-    Sam Peets
+    Ali Gaineshev (https://github.com/ali-gaineshev)
+    Omar Madhani (https://github.com/omarmadhani)
+    Abil Nurgaliyev (https://github.com/abil-nrg)
+    Sam Peets (https://github.com/sam-peets)
  
-    All team members contributed to the general logic, algorithms and structure of this project
